@@ -1,0 +1,23 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.border {
+  border: 2px solid red;
+}
+
+.screen {
+  height: 70px;
+  border-radius: 10px;
+  background-color: #f4f6fb;
+  width: calc(100% - 40px);
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  font-size: 30px;
+}
