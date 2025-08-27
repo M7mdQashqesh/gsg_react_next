@@ -1,0 +1,21 @@
+.form-component {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-component > input[type="text"] {
+  padding: 10px;
+  border-radius: 5px;
+  border: 2px solid gray;
+  outline: none;
+}
+
+.form-component > input[type="submit"] {
+  padding: 7px 10px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+}
