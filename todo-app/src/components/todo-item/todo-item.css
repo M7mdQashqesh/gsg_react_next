@@ -1,0 +1,16 @@
+.item-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+}
+
+.item-wrapper.urgent {
+  border-left: 3px solid red;
+}
+
+.item-wrapper.complete {
+  color: #777;
+  text-decoration: line-through;
+}
