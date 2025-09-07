@@ -1,12 +1,12 @@
-import { useState } from "react";
 import "./form.css";
+import React, { useState } from "react";
 import type { ITodoItem } from "../../types";
 
 interface IProps {
   onCreateTask: (task: ITodoItem) => void;
 }
 
-function TodoForm(props: IProps) {
+const TodoForm = React.memo((props: IProps) => {
   const [errorMsg, setErrorMsg] = useState<string>("");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,6 +46,6 @@ function TodoForm(props: IProps) {
       )}
     </form>
   );
-}
+});
 
 export default TodoForm;

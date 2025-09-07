@@ -1,9 +1,10 @@
-import { useState } from "react";
 import "./App.css";
+import type { ITodoItem } from "./types";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import Dashboard from "./components/dashboard/dashboard.component";
 import TodoForm from "./components/form/form.component";
 import TodoList from "./components/todo-list/todo-list.component";
-import type { ITodoItem } from "./types";
+import reducer from "./state/reducer";
 
 const days: string[] = [
   "Sunday",
@@ -30,42 +31,60 @@ const months: string[] = [
 ];
 
 function App() {
-  const [todos, setTodos] = useState<ITodoItem[]>(() => {
-    const localTasks = window.localStorage.getItem("tasks");
-    return localTasks ? JSON.parse(localTasks) : [];
+  const [timer, setTimer] = useState<string>();
+  const [state, dispatch] = useReducer(reducer, {
+    todos: JSON.parse(window.localStorage.getItem("tasks") || "[]"),
   });
 
-  function handleNewTask(newTask: ITodoItem) {
-    const newTodos = [...todos, newTask];
-    window.localStorage.setItem("tasks", JSON.stringify(newTodos));
-    setTodos(newTodos);
+  let intervalId = useRef<number>(0);
+  useEffect(() => {
+    intervalId.current = setInterval(() => {
+      setTimer(new Date().toLocaleTimeString());
+    }, 1000);
+
+    return () => {
+      if (intervalId.current) clearInterval(intervalId.current);
+    };
+  }, []);
+
+  function stopTimer() {
+    if (intervalId.current) clearInterval(intervalId.current);
   }
 
+  const handleNewTask = useCallback(
+    (newTask: ITodoItem) => {
+      dispatch({ type: "ADD_TODO", payload: newTask });
+    },
+    [state.todos]
+  );
+
   function handleDelete(id: number) {
-    const newTodos = todos.filter((todo) => todo.id !== id);
-    window.localStorage.setItem("tasks", JSON.stringify(newTodos));
-    setTodos(newTodos);
+    dispatch({ type: "REMOVE_TODO", payload: id });
   }
 
   function handleToggle(e: React.ChangeEvent<HTMLInputElement>) {
-    const newTodos = todos.map((todo) =>
-      todo.id === Number(e.target.dataset["itemId"])
-        ? { ...todo, isDone: !todo.isDone }
-        : todo
-    );
-    window.localStorage.setItem("tasks", JSON.stringify(newTodos));
-    setTodos(newTodos);
+    const itemId = Number(e.target.dataset["itemId"]);
+    dispatch({ type: "TOGGLE_TODO", payload: itemId });
   }
+
+  useEffect(() => {
+    window.localStorage.setItem("tasks", JSON.stringify(state.todos));
+  }, [state.todos]);
 
   return (
     <div>
       <p>
         <b>{days[new Date().getDay()]}</b>, {new Date().getDate()}{" "}
-        {months[new Date().getMonth()]}
+        {months[new Date().getMonth()]} - {timer}{" "}
+        <button onClick={stopTimer}>Stop</button>
       </p>
       <TodoForm onCreateTask={handleNewTask} />
-      <Dashboard items={todos} />
-      <TodoList items={todos} onDelete={handleDelete} onToggle={handleToggle} />
+      <Dashboard items={state.todos} />
+      <TodoList
+        items={state.todos}
+        onDelete={handleDelete}
+        onToggle={handleToggle}
+      />
     </div>
   );
 }

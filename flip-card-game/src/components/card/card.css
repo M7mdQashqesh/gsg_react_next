@@ -1,0 +1,15 @@
+.card {
+  border: 1px solid #cdcdcd;
+  border-radius: 5px;
+  aspect-ratio: 1;
+
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  cursor: pointer;
+}
+
+.card:hover {
+  border-width: 3px;
+}
